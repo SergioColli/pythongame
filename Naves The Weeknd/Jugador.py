@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load(r"C:\\Users\rockp\OneDrive\Documentos\assets/player.png").convert() #Aquí cargamos la imagen de nuestro personaje.
+		self.image = pygame.image.load(r"C:\Users\Luis\Documents\assets/player.png").convert() #Aquí cargamos la imagen de nuestro personaje.
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.centerx = WIDTH // 2
@@ -33,18 +33,20 @@ class Player(pygame.sprite.Sprite):
 			self.rect.right = WIDTH
 		if self.rect.left < 0:
 			self.rect.left = 0
-	
+
 	#Balas:
 	def shoot(self):
 		bullet = Bullet(self.rect.centerx, self.rect.top)
 		all_sprites.add(bullet)
 		bullets.add(bullet)
 
+	
+
 #Aquí agregamos a los enemigos(Aliens).
 class Aliens(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load(r"C:\\Users\rockp\OneDrive\Documentos\assets/Alien.png").convert()
+		self.image = pygame.image.load(r"C:\Users\Luis\Documents\assets/Alien.png").convert()
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.x = random.randrange(WIDTH - self.rect.width)
@@ -65,7 +67,7 @@ class Aliens(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
 	def __init__(self, x, y):
 		super().__init__()
-		self.image = pygame.image.load(r"C:\\Users\rockp\OneDrive\Documentos\assets/laser.png").convert()
+		self.image = pygame.image.load(r"C:\Users\Luis\Documents\assets/laser.png").convert()
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.y = y
@@ -77,14 +79,16 @@ class Bullet(pygame.sprite.Sprite):
 		if self.rect.bottom < 0:
 			self.kill()
 
+			
+	
 
 # Cargar imagen de fondo (en caso de querer cambiar fondo modificar abajo)
-background = pygame.image.load(r"C:\\Users\rockp\OneDrive\Documentos\assets/background.png").convert()
+background = pygame.image.load(r"C:\Users\Luis\Documents\assets/background.png").convert()
 
 #Listas
 all_sprites = pygame.sprite.Group()
 aliens_list = pygame.sprite.Group()
-bullets = pygame.sprite.Group
+bullets = pygame.sprite.Group()
 
 player = Player()
 all_sprites.add(player)
@@ -96,19 +100,17 @@ for i in range(8):     #cantidad de Aliens.
 # Game Loop
 running = True
 while running:
-	# Keep loop running at the right speed
-	clock.tick(60)
-	# Process input (events)
-	for event in pygame.event.get():
-		# check for closing window
-		if event.type == pygame.QUIT:
+	clock.tick(60) 	# Keep loop running at the right speed
+	for event in pygame.event.get(): # Process input (events)
+		if event.type == pygame.QUIT: # check for closing window
 			running = False
+			
 		elif event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_SPACE:  #Aquí podemos cambiar la tecla del disparo.
 				player.shoot()
 
-	# Update
-	all_sprites.update() 
+	
+	all_sprites.update() # Update
 
 	#Colisiones - Alien - laser.
 	hits = pygame.sprite.groupcollide(aliens_list, bullets, True, True)
@@ -130,5 +132,4 @@ while running:
 	all_sprites.draw(screen)
 	# *after* drawing everything, flip the display.
 	pygame.display.flip()
-
 pygame.quit()
