@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load("assets/player.png").convert()
+		self.image = pygame.image.load(r"C:\\Users\Luis\Documents\assets/player.png").convert()
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.centerx = WIDTH // 2
@@ -54,7 +54,7 @@ while running:
 		
 
 	# Update
-	all_sprites.update()
+	all_sprites.update() 
 
 	#Draw / Render
 	screen.fill(BLACK)
