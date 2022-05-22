@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load(r"C:\\Users\Luis\Documents\assets/player.png").convert()
+		self.image = pygame.image.load(r"C:\\Users\rockp\OneDrive\Documentos\assets/player.png").convert() #Aquí cargamos la imagen de nuestro personaje.
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.centerx = WIDTH // 2
