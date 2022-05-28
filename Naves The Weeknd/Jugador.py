@@ -96,12 +96,12 @@ class Aliens(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
 	def __init__(self, x, y):
 		super().__init__()
-		self.image = pygame.image.load(r"C:\Users\Luis\Documents\assets/laser.png").convert()
+		self.image = pygame.image.load("assets/Bala.png").convert()
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.y = y
 		self.rect.centerx = x
-		self.speedy = -10
+		self.speedy = -6
 	
 	def update(self):
 		self.rect.y += self.speedy
@@ -165,7 +165,7 @@ for i in range(4):
 	explosion_anim.append(img_scale)
 
 # Cargar imagen de fondo (en caso de querer cambiar fondo modificar abajo)
-background = pygame.image.load(r"C:\Users\Luis\Documents\assets/background.png").convert()
+background = pygame.image.load("assets/background.png").convert()
 
 
 #Sonidos
