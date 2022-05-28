@@ -7,6 +7,7 @@ from tkinter import CENTER, font
 from tkinter.tix import Meter
 from tokenize import PlainToken
 from turtle import width
+from numpy import short
 import pygame, random
 WIDTH = 800
 HEIGHT = 600
@@ -40,7 +41,7 @@ def draw_shield_bar(surface,x,y,percentage):
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load(r"C:\Users\Luis\Documents\assets/player.png").convert() #Aquí cargamos la imagen de nuestro personaje.
+		self.image = pygame.image.load("Assets/player.png").convert() #Aquí cargamos la imagen de nuestro personaje.
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.centerx = WIDTH // 2
@@ -107,48 +108,99 @@ class Bullet(pygame.sprite.Sprite):
 		if self.rect.bottom < 0:
 			self.kill()
 
- 
+
+class Explosion(pygame.sprite.Sprite):
+	def __init__(self,center):
+		super().__init__()
+		self.image = explosion_anim[0]
+		self.rect=self.image.get_rect()
+		self.rect.center= center
+		self.frame=0
+		self.last_update=pygame.time.get_ticks()
+		self.frame_rate= 50 #Velocidad de explosion
+
+
+	def update(self):
+		now = pygame.time.get_ticks()
+		if now - self.last_update > self.frame_rate:
+			self.last_update = now
+			self.frame += 1
+			if self.frame == len(explosion_anim):
+				self.kill()
+			else:
+				center = self.rect.center
+				self.image = explosion_anim[self.frame]
+				self.rect = self.image.get_rect()
+				self.rect.center = center
+
+##Pantalla game over
+def show_go_screen():
+	draw_text(screen, "Shooter",65, WIDTH//2, HEIGHT//4)
+	draw_text(screen,"Gracias por jugar,toque cualquier letra",27,WIDTH//2,HEIGHT//2)
+	draw_text(screen,"By,Luis.PB, y Sergio.CH",20,WIDTH//1.2,HEIGHT//4)
+	pygame.display.flip()
+	waiting=True
+	while waiting:
+		clock.tick(60)
+		for event in pygame.event.get():
+			if event.type==pygame.QUIT:
+				pygame.quit()	
+			if event.type==pygame.KEYUP:
+				waiting=False
+
 Meteor_imagenes= []
-Meteor_lista= [r"C:\\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\assets/Alien2.png",
-			r"C:\\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\assets/Asteroide2.png",r"C:\\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\assets/Asteroide.png",
-			r"C:\\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\assets/Alien.png"]
+Meteor_lista= ["assets/Alien.png","assets/Alien2.png","assets/Asteroide.png","assets/Asteroide2.png"]
 for img in Meteor_lista:
 	Meteor_imagenes.append(pygame.image.load(img).convert())
 
 
 #Explosiones#
+#Explosiones#
+explosion_anim = []
+for i in range(4):
+	file= "assets/regularExplosion0{}.png".format(i)
+	img = pygame.image.load(file).convert()
+	img.set_colorkey(BLACK)
+	img_scale= pygame.transform.scale(img, (70,70))
+	explosion_anim.append(img_scale)
 
 # Cargar imagen de fondo (en caso de querer cambiar fondo modificar abajo)
 background = pygame.image.load(r"C:\Users\Luis\Documents\assets/background.png").convert()
 
 
 #Sonidos
-laser_sound=pygame.mixer.Sound(r"C:\\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\Sonido/LaserRapido.ogg")
-explosion_sound=pygame.mixer.Sound(r"C:\\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\Sonido/Explocion.wav")
-pygame.mixer.music.load(r"C:\Users\Luis\Documents\pythongame-main\pythongame-main\Naves The Weeknd\Sonido\musica.mp3")
+laser_sound=pygame.mixer.Sound("Sonido/LaserRapido.ogg")
+explosion_sound=pygame.mixer.Sound("Sonido/Explocion.wav")
+pygame.mixer.music.load("Sonido/musica.mp3")
 pygame.mixer.music.set_volume(0.6)
 
 
-#Listas
-all_sprites = pygame.sprite.Group()
-aliens_list = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
-
-player = Player()
-all_sprites.add(player)
-for i in range(8):     #cantidad de Aliens.
-	aliens = Aliens()
-	all_sprites.add(aliens)
-	aliens_list.add(aliens)
-
-
-score=0
 pygame.mixer.music.play(loops=-1)
 
-
+##Game overe
 # Game Loop
+game_over=True
 running = True
 while running:
+	if game_over:
+
+		show_go_screen()
+
+		game_over=False
+		#Listas
+		all_sprites = pygame.sprite.Group()
+		aliens_list = pygame.sprite.Group()
+		bullets = pygame.sprite.Group()
+
+		player = Player()
+		all_sprites.add(player)
+		for i in range(8):     #cantidad de Aliens.
+			aliens = Aliens()
+			all_sprites.add(aliens)
+			aliens_list.add(aliens)
+		score=0
+
+
 	clock.tick(60) 	# Keep loop running at the right speed
 	for event in pygame.event.get(): # Process input (events)
 		if event.type == pygame.QUIT: # check for closing window
@@ -165,6 +217,8 @@ while running:
 	hits = pygame.sprite.groupcollide(aliens_list, bullets, True, True)
 	for hit in hits:
 		score+=10
+		explosion=Explosion(hit.rect.center)
+		all_sprites.add(explosion) 
 		explosion_sound.play()
 		aliens = Aliens()
 		all_sprites.add(aliens)
@@ -178,7 +232,7 @@ while running:
 		all_sprites.add(aliens)
 		aliens_list.add(aliens)
 		if player.shield<= 0:
-			running = False
+			game_over = True
 
 
 
