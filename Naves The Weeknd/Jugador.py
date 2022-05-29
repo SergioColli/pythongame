@@ -48,6 +48,7 @@ class Player(pygame.sprite.Sprite):
 		self.rect.bottom = HEIGHT - 10
 		self.speed_x = 0
 		self.shield = 100
+		self.score = 0
 
 	def update(self):
 		self.speed_x = 0
@@ -135,9 +136,9 @@ class Explosion(pygame.sprite.Sprite):
 
 ##Pantalla game over
 def show_go_screen():
-	draw_text(screen, "Shooter",65, WIDTH//2, HEIGHT//4)
-	draw_text(screen,"Gracias por jugar,toque cualquier letra",27,WIDTH//2,HEIGHT//2)
-	draw_text(screen,"By,Luis.PB, y Sergio.CH",20,WIDTH//1.2,HEIGHT//4)
+	draw_text(screen, "Space Invaders", 65, WIDTH//2, HEIGHT//4)
+	draw_text(screen,"Gracias Por Jugar, Presione Cualquier Botón.",27,WIDTH//2,HEIGHT//2)
+	draw_text(screen,"By Luis P.B y Sergio C.H",19,WIDTH//1.2,HEIGHT//8)
 	pygame.display.flip()
 	waiting=True
 	while waiting:
@@ -198,7 +199,7 @@ while running:
 			aliens = Aliens()
 			all_sprites.add(aliens)
 			aliens_list.add(aliens)
-		score=0
+		player.score=0
 
 
 	clock.tick(60) 	# Keep loop running at the right speed
@@ -216,7 +217,7 @@ while running:
 	#Colisiones - Alien - laser.
 	hits = pygame.sprite.groupcollide(aliens_list, bullets, True, True)
 	for hit in hits:
-		score+=10
+		player.score+=10
 		explosion=Explosion(hit.rect.center)
 		all_sprites.add(explosion) 
 		explosion_sound.play()
@@ -239,7 +240,7 @@ while running:
 	#Draw / Render
 	screen.blit(background, [0, 0])
 	#marcador
-	draw_text(screen, str(score),25,30,13)
+	draw_text(screen, str(player.score),25,30,13)
 
 	all_sprites.draw(screen)
 	# *after* drawing everything, flip the display.
